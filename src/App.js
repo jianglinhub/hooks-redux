@@ -1,23 +1,43 @@
 import React from 'react';
-import logo from './logo.svg';
+import HooksRedux from './hooks-redux'
 import './App.css';
+const { Provider, store } = HooksRedux({
+  isDev: true,
+  initialState: { jg: 'hooks-redux', age: 0 }
+})
+
+function actionAdd() {
+  return {
+    type: 'addCount',
+    reducer(state) {
+      return { ...state, age: state.age + 1 }
+    }
+  }
+}
+
+function Button() {
+  function handleAdd() {
+    store.dispatch(actionAdd())
+  }
+  return <button onClick={handleAdd}>click</button>
+}
+
+function Page() {
+  const state = store.useContext()
+  return (
+    <>
+      {state.age} <Button />
+    </>
+  )
+}
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+       <Provider>
+        <Page />
+       </Provider>
       </header>
     </div>
   );
